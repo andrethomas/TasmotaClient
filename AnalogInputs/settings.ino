@@ -4,7 +4,7 @@ void ConfigureFeatures(void)
 {
   Settings.features_version = 20191022;
   Settings.features.json = 1;
-  Settings.features.spare1 = 0;
+  Settings.features.second_tick = 1;
   Settings.features.spare2 = 0;
   Settings.features.spare3 = 0;
   Settings.features.spare4 = 0;

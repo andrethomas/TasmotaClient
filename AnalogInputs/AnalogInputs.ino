@@ -11,7 +11,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Settings.features_version = 20191026;
   Settings.features.json = 1;
-  Settings.features.spare1 = 0;
+  Settings.features.second_tick = 1;
   Settings.features.spare2 = 0;
   Settings.features.spare3 = 0;
   Settings.features.spare4 = 0;
@@ -40,6 +40,17 @@ void SendFeatures(void)
   Serial.write(char(PARAM_DATA_END));
 }
 
+void Task_EVERY_SECOND(void)
+{
+  if (ledstate) {
+    ledstate = false;
+    digitalWrite(LED_BUILTIN, LOW);
+  } else {
+    ledstate = true;
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+}
+
 void SendJSON(void)
 {
   uint16_t a0 = analogRead(A0);
@@ -66,6 +77,9 @@ void ProcessCommand(void)
              break;
       case CMND_JSON:
              SendJSON();
+             break;
+      case CMND_SECOND_TICK:
+             Task_EVERY_SECOND();
              break;
       default:
              break;

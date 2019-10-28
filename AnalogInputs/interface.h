@@ -6,6 +6,7 @@
 
 #define CMND_FEATURES                  0x01
 #define CMND_JSON                      0x02
+#define CMND_SECOND_TICK               0x03
 
 #define PARAM_DATA_START               0xFE
 #define PARAM_DATA_END                 0xFF

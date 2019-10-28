@@ -4,8 +4,8 @@
 typedef union {
   uint16_t data;
   struct {
-    uint16_t json : 1;
-    uint16_t spare1 : 1;
+    uint16_t json : 1;              // Slave supports providing a JSON for TELEPERIOD
+    uint16_t second_tick : 1;       // Slave supports receiving a FUNC_EVERY_SECOND callback with no response
     uint16_t spare2 : 1;
     uint16_t spare3 : 1;
     uint16_t spare4 : 1;
