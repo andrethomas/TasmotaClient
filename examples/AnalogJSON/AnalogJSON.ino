@@ -13,7 +13,7 @@ void user_FUNC_JSON(void)
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  slave.attach_JSON(user_FUNC_JSON);
+  slave.attach_FUNC_JSON(user_FUNC_JSON);
 }
 
 void loop() {

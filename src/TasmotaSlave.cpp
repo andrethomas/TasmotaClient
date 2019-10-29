@@ -18,7 +18,7 @@
 */
 
 #include <Arduino.h>
-#include "TasmotaSlave.h"
+#include <TasmotaSlave.h>
 
 /*************************************************\
  * TasmotaSlave shared structures
@@ -28,11 +28,11 @@ typedef union {
   uint16_t data;
   struct {
     uint16_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
-    uint16_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback
-    uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_SECOND callback and provide a JSON response
-    uint16_t spare3 : 1;         // Supports FUNC_EVERY_100_MSECOND callback
-    uint16_t spare4 : 1;    // Supports FUNC_EVERY_100_MSECOND callback and provide a JSON response
-    uint16_t spare5 : 1;                 // Supports receiving commands via serial and sending response via serial
+    uint16_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
+    uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
+    uint16_t spare3 : 1;
+    uint16_t spare4 : 1;
+    uint16_t spare5 : 1;
     uint16_t spare6 : 1;
     uint16_t spare7 : 1;
     uint16_t spare8 : 1;
@@ -104,7 +104,7 @@ void TasmotaSlave::sendJSON(char *json)
   serial->write(char(PARAM_DATA_END));
 }
 
-void TasmotaSlave::attach_JSON(callbackFunc func)
+void TasmotaSlave::attach_FUNC_JSON(callbackFunc func)
 {
   Settings.features.func_json_append = 1;
   FUNC_JSON = func;
@@ -132,15 +132,19 @@ void TasmotaSlave::ProcessCommand(void)
       case CMND_FEATURES:
         sendFeatures();
         break;
-      case CMND_JSON:
+      case CMND_FUNC_JSON:
         if (Settings.features.func_json_append) {
           FUNC_JSON();
         }
         break;
-      case CMND_SECOND_TICK:
+      case CMND_FUNC_EVERY_SECOND:
         if (Settings.features.func_every_second) {
           FUNC_EVERY_SECOND();
         }
+	  case CMND_FUNC_EVERY_100_MSECOND:
+	    if (Settings.features.func_every_100_msecond) {
+          FUNC_EVERY_100_MSECOND();
+		}
         break;
       default:
         break;

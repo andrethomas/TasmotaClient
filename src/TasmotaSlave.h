@@ -36,8 +36,9 @@
 #define CMND_END                       0xFD
 
 #define CMND_FEATURES                  0x01
-#define CMND_JSON                      0x02
-#define CMND_SECOND_TICK               0x03
+#define CMND_FUNC_JSON                 0x02
+#define CMND_FUNC_EVERY_SECOND         0x03
+#define CMND_FUNC_EVERY_100_MSECOND    0x04
 
 /*************************************************\
  * TasmotaSlave Parameter defintions
@@ -57,7 +58,7 @@ class TasmotaSlave {
      TasmotaSlave(HardwareSerial *device, uint32_t baud);
      void sendFeatures(void);
      void sendJSON(char *json);
-     void attach_JSON(callbackFunc func = nullptr);
+     void attach_FUNC_JSON(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
 	 void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
      void ProcessCommand(void);
