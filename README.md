@@ -1,4 +1,3 @@
-# Tasmota Slave
+# TasmotaSlave
 
-This repository provices examples and sketches for using the Tasmota Slave functionality of Tasmota
-from https://github.com/arendst/Tasmota
+This library adds support for the TasmotaSlave driver integrated into Tasmota from https://github.com/arendst/Tasmota
