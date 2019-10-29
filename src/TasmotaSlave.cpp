@@ -29,10 +29,10 @@ typedef union {
   struct {
     uint16_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
     uint16_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback
-    uint16_t func_every_second_json : 1;         // Supports FUNC_EVERY_SECOND callback and provide a JSON response
-    uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback
-    uint16_t func_every_100_msecond_json : 1;    // Supports FUNC_EVERY_100_MSECOND callback and provide a JSON response
-    uint16_t serial_command : 1;                 // Supports receiving commands via serial and sending response via serial
+    uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_SECOND callback and provide a JSON response
+    uint16_t spare3 : 1;         // Supports FUNC_EVERY_100_MSECOND callback
+    uint16_t spare4 : 1;    // Supports FUNC_EVERY_100_MSECOND callback and provide a JSON response
+    uint16_t spare5 : 1;                 // Supports receiving commands via serial and sending response via serial
     uint16_t spare6 : 1;
     uint16_t spare7 : 1;
     uint16_t spare8 : 1;
@@ -68,10 +68,10 @@ TasmotaSlave::TasmotaSlave(HardwareSerial *device, uint32_t baud)
   Settings.features_version = TASMOTA_SLAVE_LIB_VERSION;
   Settings.features.func_json_append = 0;
   Settings.features.func_every_second = 0;
-  Settings.features.func_every_second_json = 0;
   Settings.features.func_every_100_msecond = 0;
-  Settings.features.func_every_100_msecond_json = 0;
-  Settings.features.serial_command = 0;
+  Settings.features.spare3 = 0;
+  Settings.features.spare4 = 0;
+  Settings.features.spare5 = 0;
   Settings.features.spare6 = 0;
   Settings.features.spare7 = 0;
   Settings.features.spare8 = 0;
@@ -114,6 +114,12 @@ void TasmotaSlave::attach_FUNC_EVERY_SECOND(callbackFunc func)
 {
   Settings.features.func_every_second = 1;
   FUNC_EVERY_SECOND = func;
+}
+
+void TasmotaSlave::attach_FUNC_EVERY_100_MSECOND(callbackFunc func)
+{
+  Settings.features.func_every_100_msecond = 1;
+  FUNC_EVERY_100_MSECOND = func;
 }
 
 void TasmotaSlave::ProcessCommand(void)

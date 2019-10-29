@@ -59,12 +59,14 @@ class TasmotaSlave {
      void sendJSON(char *json);
      void attach_JSON(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
+	 void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
      void ProcessCommand(void);
      void process(void);
     private:
      HardwareSerial *serial;
      callbackFunc FUNC_JSON;
      callbackFunc FUNC_EVERY_SECOND;
+	 callbackFunc FUNC_EVERY_100_MSECOND;
 };
 
 #endif // __TASMOTASLAVE_H__
