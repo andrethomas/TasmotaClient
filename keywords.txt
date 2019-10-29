@@ -1,0 +1,25 @@
+#######################################
+# Syntax Coloring Map for TasmotaSlave
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TasmotaSlave			KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+sendFeatures			KEYWORD2
+sendJSON			KEYWORD2
+attach_JSON			KEYWORD2
+attach_FUNC_EVERY_SECOND	KEYWORD2
+ProcessCommand			KEYWORD2
+process				KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
