@@ -141,6 +141,7 @@ void TasmotaSlave::ProcessCommand(void)
         if (Settings.features.func_every_second) {
           FUNC_EVERY_SECOND();
         }
+        break;
       case CMND_FUNC_EVERY_100_MSECOND:
         if (Settings.features.func_every_100_msecond) {
 	  FUNC_EVERY_100_MSECOND();
