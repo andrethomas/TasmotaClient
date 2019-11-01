@@ -12,6 +12,7 @@ void user_FUNC_JSON(void)
 }
 
 void setup() {
+  Serial.begin(57600);
   pinMode(LED_BUILTIN, OUTPUT);
   slave.attach_FUNC_JSON(user_FUNC_JSON);
 }
