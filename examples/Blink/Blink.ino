@@ -17,6 +17,7 @@ void user_FUNC_EVERY_SECOND(void)
 }
 
 void setup() {
+  Serial.begin(57600);
   pinMode(LED_BUILTIN, OUTPUT);
   slave.attach_FUNC_EVERY_SECOND(user_FUNC_EVERY_SECOND);
 }
