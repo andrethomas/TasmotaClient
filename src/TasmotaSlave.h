@@ -26,7 +26,7 @@
  * TasmotaSlave Configuration Defaults
 \*************************************************/
 
-#define TASMOTA_SLAVE_LIB_VERSION      20191026
+#define TASMOTA_SLAVE_LIB_VERSION      20191101
 
 /*************************************************\
  * TasmotaSlave Command definitions
@@ -39,6 +39,7 @@
 #define CMND_FUNC_JSON                 0x02
 #define CMND_FUNC_EVERY_SECOND         0x03
 #define CMND_FUNC_EVERY_100_MSECOND    0x04
+#define CMND_COMMAND_SEND              0x05
 
 /*************************************************\
  * TasmotaSlave Parameter defintions
@@ -55,19 +56,24 @@ typedef void (*callbackFunc) (void);
 
 class TasmotaSlave {
     public:
-     TasmotaSlave(HardwareSerial *device, uint32_t baud);
+     char receive_buffer[100];
+     TasmotaSlave(HardwareSerial *device);
      void sendFeatures(void);
      void sendJSON(char *json);
      void attach_FUNC_JSON(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
+     void attach_FUNC_COMMAND_SEND(callbackFunc func = nullptr);
+     uint8_t waitforbytes(uint16_t num, uint16_t timeout);     
+     void ProcessSend(uint8_t sz);
      void ProcessCommand(void);
-     void process(void);
+     void loop(void);
     private:
      HardwareSerial *serial;
      callbackFunc FUNC_JSON;
      callbackFunc FUNC_EVERY_SECOND;
      callbackFunc FUNC_EVERY_100_MSECOND;
+     callbackFunc FUNC_SEND;
 };
 
 #endif // __TASMOTASLAVE_H__

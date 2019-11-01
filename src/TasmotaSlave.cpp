@@ -30,7 +30,7 @@ typedef union {
     uint16_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
     uint16_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
     uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
-    uint16_t spare3 : 1;
+    uint16_t func_command_send : 1;
     uint16_t spare4 : 1;
     uint16_t spare5 : 1;
     uint16_t spare6 : 1;
@@ -52,7 +52,6 @@ struct FEATURES {
   uint16_t spare4;
 } Settings;
 
-
 struct COMMAND {
   uint8_t command;
   uint8_t parameter;
@@ -60,16 +59,14 @@ struct COMMAND {
   uint8_t unused3;
 } Command;
 
-TasmotaSlave::TasmotaSlave(HardwareSerial *device, uint32_t baud)
+TasmotaSlave::TasmotaSlave(HardwareSerial *device)
 {
   serial = device;
-  serial->begin(baud);
-  serial->setTimeout(50);
   Settings.features_version = TASMOTA_SLAVE_LIB_VERSION;
   Settings.features.func_json_append = 0;
   Settings.features.func_every_second = 0;
   Settings.features.func_every_100_msecond = 0;
-  Settings.features.spare3 = 0;
+  Settings.features.func_command_send = 0;
   Settings.features.spare4 = 0;
   Settings.features.spare5 = 0;
   Settings.features.spare6 = 0;
@@ -122,30 +119,63 @@ void TasmotaSlave::attach_FUNC_EVERY_100_MSECOND(callbackFunc func)
   FUNC_EVERY_100_MSECOND = func;
 }
 
+void TasmotaSlave::attach_FUNC_COMMAND_SEND(callbackFunc func)
+{
+  Settings.features.func_command_send = 1;
+  FUNC_SEND = func;
+}
+
+uint8_t TasmotaSlave::waitforbytes(uint16_t num, uint16_t timeout)
+{
+  uint16_t timer = 0;
+  while (timeout >= timer) {
+    if (serial->available() >= num) {
+      return 1;
+    }
+    delay(1);
+    timer++;
+  }
+  return 0;
+}
+
+void TasmotaSlave::ProcessSend(uint8_t sz)
+{
+  if (waitforbytes(sz+2,50)) {
+    serial->read(); // read leading character
+    for (uint8_t idx = 0; idx < sz; idx++) {
+      receive_buffer[idx] = serial->read();
+    }
+    serial->read(); // read trailing byte
+    receive_buffer[sz] = '\0';
+    FUNC_SEND();
+  }
+}
+
+
 void TasmotaSlave::ProcessCommand(void)
 {
-  char buffer[sizeof(Command)];
-  uint8_t len = serial->readBytesUntil(char(CMND_END), buffer, sizeof(buffer));
-  if (len == sizeof(Command)) {
+  if (waitforbytes(sizeof(Command)+1, 100)) {
+    char buffer[sizeof(Command)];
+    for (uint8_t idx = 0; idx < sizeof(Command); idx++) {
+      buffer[idx] = serial->read();
+    }
+    serial->read(); // Remove end of command character
     memcpy(&Command, &buffer, sizeof(Command));
     switch (Command.command) {
       case CMND_FEATURES:
         sendFeatures();
         break;
       case CMND_FUNC_JSON:
-        if (Settings.features.func_json_append) {
-          FUNC_JSON();
-        }
+        FUNC_JSON();
         break;
       case CMND_FUNC_EVERY_SECOND:
-        if (Settings.features.func_every_second) {
-          FUNC_EVERY_SECOND();
-        }
+        FUNC_EVERY_SECOND();
         break;
       case CMND_FUNC_EVERY_100_MSECOND:
-        if (Settings.features.func_every_100_msecond) {
-	  FUNC_EVERY_100_MSECOND();
-        }
+        FUNC_EVERY_100_MSECOND();
+        break;
+      case CMND_COMMAND_SEND:
+        ProcessSend(Command.parameter);
         break;
       default:
         break;
@@ -153,7 +183,7 @@ void TasmotaSlave::ProcessCommand(void)
   }
 }
 
-void TasmotaSlave::process(void)
+void TasmotaSlave::loop(void)
 {
   if (serial->available()) {
     uint8_t cmnd = serial->read();

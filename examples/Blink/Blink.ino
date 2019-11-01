@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <TasmotaSlave.h>
 
-TasmotaSlave slave(&Serial, 57600);
+TasmotaSlave slave(&Serial);
 
 bool ledstate = false;
 
@@ -23,5 +23,5 @@ void setup() {
 }
 
 void loop() {
-  slave.process();
+  slave.loop();
 }
