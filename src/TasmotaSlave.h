@@ -39,7 +39,8 @@
 #define CMND_FUNC_JSON                 0x02
 #define CMND_FUNC_EVERY_SECOND         0x03
 #define CMND_FUNC_EVERY_100_MSECOND    0x04
-#define CMND_SLAVE_SEND              0x05
+#define CMND_SLAVE_SEND                0x05
+#define CMND_PUBLISH_TELE              0x06
 
 /*************************************************\
  * TasmotaSlave Parameter defintions
@@ -65,6 +66,8 @@ class TasmotaSlave {
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
      void attach_FUNC_COMMAND_SEND(callbackFunc1 func = nullptr);
+	 void SendCommand(uint8_t cmnd, uint8_t param);
+	 void SendTele(char *data);
      uint8_t waitforbytes(uint16_t num, uint16_t timeout);     
      void ProcessSend(uint8_t sz);
      void ProcessCommand(void);

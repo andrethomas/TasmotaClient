@@ -30,7 +30,7 @@ typedef union {
     uint32_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
     uint32_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
     uint32_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
-    uint32_t func_send : 1;                      // Supports FUNC_COMMAND
+    uint32_t func_slave_send : 1;                      // Supports FUNC_COMMAND
     uint32_t spare4 : 1;
     uint32_t spare5 : 1;
     uint32_t spare6 : 1;
@@ -81,7 +81,7 @@ TasmotaSlave::TasmotaSlave(HardwareSerial *device)
   Settings.features.func_json_append = 0;
   Settings.features.func_every_second = 0;
   Settings.features.func_every_100_msecond = 0;
-  Settings.features.func_send = 0;
+  Settings.features.func_slave_send = 0;
   Settings.features.spare4 = 0;
   Settings.features.spare5 = 0;
   Settings.features.spare6 = 0;
@@ -152,7 +152,7 @@ void TasmotaSlave::attach_FUNC_EVERY_100_MSECOND(callbackFunc func)
 
 void TasmotaSlave::attach_FUNC_COMMAND_SEND(callbackFunc1 func)
 {
-  Settings.features.func_send = 1;
+  Settings.features.func_slave_send = 1;
   FUNC_SEND = func;
 }
 
@@ -181,7 +181,6 @@ void TasmotaSlave::ProcessSend(uint8_t sz)
     FUNC_SEND(receive_buffer);
   }
 }
-
 
 void TasmotaSlave::ProcessCommand(void)
 {
@@ -212,6 +211,31 @@ void TasmotaSlave::ProcessCommand(void)
         break;
     }
   }
+}
+
+void TasmotaSlave::SendCommand(uint8_t cmnd, uint8_t param)
+{
+ Command.command = cmnd;
+ Command.parameter = param;
+ Command.unused2 = 0;
+ Command.unused3 = 0;
+ uint8_t tmp[sizeof(Command)];
+ memcpy(&tmp, &Command, sizeof(Command));
+ serial->write(char(CMND_START));
+ for (uint8_t idx = 0; idx < sizeof(Command); idx++) {
+   serial->write(tmp[idx]);
+ }
+ serial->write(char(CMND_END));
+}
+
+void TasmotaSlave::SendTele(char *data)
+{
+  SendCommand(CMND_PUBLISH_TELE, strlen(data));
+  serial->write(char(PARAM_DATA_START));
+  for (uint8_t idx = 0; idx < strlen(data); idx++) {
+	  serial->write(data[idx]);
+  }
+  serial->write(char(PARAM_DATA_END));
 }
 
 void TasmotaSlave::loop(void)
