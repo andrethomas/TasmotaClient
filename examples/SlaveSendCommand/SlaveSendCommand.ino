@@ -10,12 +10,12 @@ void setup() {
   slave.attach_FUNC_COMMAND_SEND(user_FUNC_RECEIVE);
 }
 
-void user_FUNC_RECEIVE(void)
+void user_FUNC_RECEIVE(char *data)
 {
-  if (!strcmp(slave.receive_buffer, "ON")) {
+  if (!strcmp(data, "ON")) {
     digitalWrite(LED_BUILTIN, HIGH);
   }
-  if (!strcmp(slave.receive_buffer, "OFF")) {
+  if (!strcmp(data, "OFF")) {
     digitalWrite(LED_BUILTIN, LOW);
   }
 }

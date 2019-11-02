@@ -25,31 +25,46 @@
 \*************************************************/
 
 typedef union {
-  uint16_t data;
+  uint32_t data;
   struct {
-    uint16_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
-    uint16_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
-    uint16_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
-    uint16_t func_command_send : 1;
-    uint16_t spare4 : 1;
-    uint16_t spare5 : 1;
-    uint16_t spare6 : 1;
-    uint16_t spare7 : 1;
-    uint16_t spare8 : 1;
-    uint16_t spare9 : 1;
-    uint16_t spare10 : 1;
-    uint16_t spare11 : 1;
-    uint16_t spare12 : 1;
-    uint16_t spare13 : 1;
-    uint16_t spare14 : 1;
-    uint16_t spare15 : 1;
+    uint32_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
+    uint32_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
+    uint32_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
+    uint32_t func_send : 1;                      // Supports FUNC_COMMAND
+    uint32_t spare4 : 1;
+    uint32_t spare5 : 1;
+    uint32_t spare6 : 1;
+    uint32_t spare7 : 1;
+    uint32_t spare8 : 1;
+    uint32_t spare9 : 1;
+    uint32_t spare10 : 1;
+    uint32_t spare11 : 1;
+    uint32_t spare12 : 1;
+    uint32_t spare13 : 1;
+    uint32_t spare14 : 1;
+    uint32_t spare15 : 1;
+    uint32_t spare16 : 1;
+    uint32_t spare17 : 1;
+    uint32_t spare18 : 1;
+    uint32_t spare19 : 1;
+    uint32_t spare20 : 1;
+    uint32_t spare21 : 1;
+    uint32_t spare22 : 1;
+    uint32_t spare23 : 1;
+    uint32_t spare24 : 1;
+    uint32_t spare25 : 1;
+    uint32_t spare26 : 1;
+    uint32_t spare27 : 1;
+    uint32_t spare28 : 1;
+    uint32_t spare29 : 1;
+    uint32_t spare30 : 1;
+    uint32_t spare31 : 1;
   };
 } FeatureCfg;
 
 struct FEATURES {
   uint32_t features_version;
   FeatureCfg features;
-  uint16_t spare4;
 } Settings;
 
 struct COMMAND {
@@ -66,7 +81,7 @@ TasmotaSlave::TasmotaSlave(HardwareSerial *device)
   Settings.features.func_json_append = 0;
   Settings.features.func_every_second = 0;
   Settings.features.func_every_100_msecond = 0;
-  Settings.features.func_command_send = 0;
+  Settings.features.func_send = 0;
   Settings.features.spare4 = 0;
   Settings.features.spare5 = 0;
   Settings.features.spare6 = 0;
@@ -79,6 +94,22 @@ TasmotaSlave::TasmotaSlave(HardwareSerial *device)
   Settings.features.spare13 = 0;
   Settings.features.spare14 = 0;
   Settings.features.spare15 = 0;
+  Settings.features.spare16 = 0;
+  Settings.features.spare17 = 0;
+  Settings.features.spare18 = 0;
+  Settings.features.spare19 = 0;
+  Settings.features.spare20 = 0;
+  Settings.features.spare21 = 0;
+  Settings.features.spare22 = 0;
+  Settings.features.spare23 = 0;
+  Settings.features.spare24 = 0;
+  Settings.features.spare25 = 0;
+  Settings.features.spare26 = 0;
+  Settings.features.spare27 = 0;
+  Settings.features.spare28 = 0;
+  Settings.features.spare29 = 0;
+  Settings.features.spare30 = 0;
+  Settings.features.spare31 = 0;
 }
 
 void TasmotaSlave::sendFeatures(void)
@@ -119,9 +150,9 @@ void TasmotaSlave::attach_FUNC_EVERY_100_MSECOND(callbackFunc func)
   FUNC_EVERY_100_MSECOND = func;
 }
 
-void TasmotaSlave::attach_FUNC_COMMAND_SEND(callbackFunc func)
+void TasmotaSlave::attach_FUNC_COMMAND_SEND(callbackFunc1 func)
 {
-  Settings.features.func_command_send = 1;
+  Settings.features.func_send = 1;
   FUNC_SEND = func;
 }
 
@@ -147,7 +178,7 @@ void TasmotaSlave::ProcessSend(uint8_t sz)
     }
     serial->read(); // read trailing byte
     receive_buffer[sz] = '\0';
-    FUNC_SEND();
+    FUNC_SEND(receive_buffer);
   }
 }
 
@@ -174,7 +205,7 @@ void TasmotaSlave::ProcessCommand(void)
       case CMND_FUNC_EVERY_100_MSECOND:
         FUNC_EVERY_100_MSECOND();
         break;
-      case CMND_COMMAND_SEND:
+      case CMND_SLAVE_SEND:
         ProcessSend(Command.parameter);
         break;
       default:
