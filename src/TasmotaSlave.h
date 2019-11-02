@@ -66,8 +66,8 @@ class TasmotaSlave {
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
      void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
      void attach_FUNC_COMMAND_SEND(callbackFunc1 func = nullptr);
-	 void SendCommand(uint8_t cmnd, uint8_t param);
-	 void SendTele(char *data);
+     void SendCommand(uint8_t cmnd, uint8_t param);
+     void SendTele(char *data);
      uint8_t waitforbytes(uint16_t num, uint16_t timeout);     
      void ProcessSend(uint8_t sz);
      void ProcessCommand(void);
