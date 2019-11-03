@@ -159,8 +159,8 @@ void TasmotaSlave::attach_FUNC_COMMAND_SEND(callbackFunc1 func)
 uint8_t TasmotaSlave::waitforbytes(uint16_t num, uint16_t timeout)
 {
   uint16_t timer = 0;
-  while (timeout >= timer) {
-    if (serial->available() >= num) {
+  while (timer < timeout) {
+    if (serial->available() > (int)(num-1)) {
       return 1;
     }
     delay(1);
