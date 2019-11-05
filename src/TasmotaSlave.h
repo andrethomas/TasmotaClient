@@ -59,7 +59,7 @@ typedef void (*callbackFunc1) (char*);
 class TasmotaSlave {
     public:
      char receive_buffer[100];
-     TasmotaSlave(HardwareSerial *device);
+     TasmotaSlave(HardwareSerial *device = nullptr);
      void sendFeatures(void);
      void sendJSON(char *json);
      void attach_FUNC_JSON(callbackFunc func = nullptr);
