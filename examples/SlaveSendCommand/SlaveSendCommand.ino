@@ -1,24 +1,70 @@
+/*
+  SlaveSendCommand.ino - Example for TasmotaSlave to respond to SlaveSend ON and
+                         SlaveSend OFF commands via console or telemetry.
+                         In this example the ON and OFF is case sensitive so needs
+                         to be sent in capital letters from the Tasmota device.
+                         Upon receiving ON/OFF the slave will turn the LED on/off
+                         respectively.
+                         
+                         A second function callback is also attached which will
+                         respond with a JSON message on Tasmota Teleperiod when
+                         requested from the Tasmota device.
+                         
+  Copyright (C) 2019  Andre Thomas
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <Arduino.h>
 #include <TasmotaSlave.h>
 
 TasmotaSlave slave(&Serial);
 
+/*******************************************************************\
+ * Normal setup() function for Arduino to configure the serial port
+ * speed (which should match what was configured in Tasmota) and
+ * attach any callback functions associated with specific requests
+ * or commands that are sent by Tasmota.
+\*******************************************************************/
+
 void setup() {
+  // Configure the LED pin as OUTPUT
   pinMode(LED_BUILTIN, OUTPUT);
+  // Configure the serial port baud rate
   Serial.begin(57600);
+  // Attach the function which will respond to the JSON request from Tasmota
   slave.attach_FUNC_JSON(user_FUNC_JSON);
+  // Attach the function which will be called when the Tasmota device sends data using SlaveSend command
   slave.attach_FUNC_COMMAND_SEND(user_FUNC_RECEIVE);
 }
 
+/*******************************************************************\
+ * Function which will be called when this slave device receives a
+ * SlaveSend command from the Tasmota device.
+\*******************************************************************/
+
 void user_FUNC_RECEIVE(char *data)
 {
-  if (!strcmp(data, "ON")) {
+  if (!strcmp(data, "ON")) { // SlaveSend ON
     digitalWrite(LED_BUILTIN, HIGH);
   }
-  if (!strcmp(data, "OFF")) {
+  if (!strcmp(data, "OFF")) { // SlaveSend OFF
     digitalWrite(LED_BUILTIN, LOW);
   }
 }
+
+/*******************************************************************\
+ * user_FUNC_JSON creates the JSON which will be sent back to the
+ * Tasmota device upon receiving a request to do so
+\*******************************************************************/
 
 void user_FUNC_JSON(void)
 {
@@ -29,5 +75,6 @@ void user_FUNC_JSON(void)
 }
 
 void loop() {
+  // Call the slave loop every so often to process any incoming requests
   slave.loop();
 }
