@@ -1,7 +1,32 @@
+/*
+  AnalogJSON.ino - Example on how to send a JSON back to a Tasmota device
+                   which requested it on teleperiod.
+
+  Copyright (C) 2019  Andre Thomas
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <Arduino.h>
 #include <TasmotaSlave.h>
 
 TasmotaSlave slave(&Serial);
+
+/*******************************************************************\
+ * user_FUNC_JSON creates the JSON which will be sent back to the
+ * Tasmota device upon receiving a request to do so
+\*******************************************************************/
 
 void user_FUNC_JSON(void)
 {
@@ -11,12 +36,21 @@ void user_FUNC_JSON(void)
   slave.sendJSON(myjson);
 }
 
+/*******************************************************************\
+ * Normal setup() function for Arduino to configure the serial port
+ * speed (which should match what was configured in Tasmota, and
+ * attach the function which will be called when the Tasmota device
+ * reuqests a new JSON (usually on Teleperiod on Tasmota device)
+ \*******************************************************************/
+
 void setup() {
+  // Configure the serial port speed
   Serial.begin(57600);
-  pinMode(LED_BUILTIN, OUTPUT);
+  // Attach the callback function which will provide the JSON to Tasmota
   slave.attach_FUNC_JSON(user_FUNC_JSON);
 }
 
 void loop() {
+  // Call the slave loop function every so often to process incoming requests
   slave.loop();
 }
