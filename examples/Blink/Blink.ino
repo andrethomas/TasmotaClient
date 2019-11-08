@@ -1,6 +1,6 @@
 /*
-  AnalogJSON.ino - Example on how to send a JSON back to a Tasmota device
-                   which requested it on teleperiod.
+  Blink.ino - Example for TasmotaSlave receiving the FUNC_EVERY_SECOND
+              callback and respond by toggling the LED as configured.
 
   Copyright (C) 2019  Andre Thomas
 
