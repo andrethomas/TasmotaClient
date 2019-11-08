@@ -30,7 +30,7 @@ typedef union {
     uint32_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
     uint32_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
     uint32_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
-    uint32_t func_slave_send : 1;                      // Supports FUNC_COMMAND
+    uint32_t func_slave_send : 1;                // Supports FUNC_COMMAND
     uint32_t spare4 : 1;
     uint32_t spare5 : 1;
     uint32_t spare6 : 1;
@@ -62,10 +62,18 @@ typedef union {
   };
 } FeatureCfg;
 
+/**************************************************\
+ * Settings structure - MUST remain 4 byte aligned
+\**************************************************/
+
 struct FEATURES {
   uint32_t features_version;
   FeatureCfg features;
 } Settings;
+
+/********************************************************************************\
+ * Command structure for sending/receiving commands - MUST remain 4 byte aligned
+\********************************************************************************/
 
 struct COMMAND {
   uint8_t command;
