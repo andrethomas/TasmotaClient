@@ -50,27 +50,44 @@
 #define PARAM_DATA_END                 0xFF
 
 /*************************************************\
- * TasmotaSlave Class
+ * Prototypes for passing functions as parameters
 \*************************************************/
 
 typedef void (*callbackFunc) (void);
 typedef void (*callbackFunc1) (char*);
 
+/*************************************************\
+ * TasmotaSlave Class
+\*************************************************/
+
 class TasmotaSlave {
     public:
      char receive_buffer[100];
+     // Constructor
      TasmotaSlave(HardwareSerial *device = nullptr);
+     // Sends configured features back to Tasmota so it knows which callbacks are supported
      void sendFeatures(void);
+     // Send JSON back to Tasmota device
      void sendJSON(char *json);
+     // Configure a callback for FUNC_JSON
      void attach_FUNC_JSON(callbackFunc func = nullptr);
+     // Configure a callback for FUNC_EVERY_SECOND
      void attach_FUNC_EVERY_SECOND(callbackFunc func = nullptr);
+     // Configure a callback for FUNC_EVERY_100_MSECOND
      void attach_FUNC_EVERY_100_MSECOND(callbackFunc func = nullptr);
+     // Configure a callback for FUNC_COMMAND_SEND (SlaveSend on Tasmota device)
      void attach_FUNC_COMMAND_SEND(callbackFunc1 func = nullptr);
+     // Send command to Tasmota device using the prescribed protocol
      void SendCommand(uint8_t cmnd, uint8_t param);
+     // Send telemetry data back to the Tasmota device
      void SendTele(char *data);
+     // Used internally (should probably be moved to private:)
      uint8_t waitforbytes(uint16_t num, uint16_t timeout);     
+     // Used internally to process incoming SlaveSend command
      void ProcessSend(uint8_t sz);
+     // Used internally to decode and process incoming commands from the Tasmota device
      void ProcessCommand(void);
+     // Main slave loop which needs to be serviced occasionally to process incoming requests
      void loop(void);
     private:
      HardwareSerial *serial;
