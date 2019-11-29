@@ -1,6 +1,6 @@
 {
     "name": "TasmotaSlave",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": [
       "serial", "io", "TasmotaSlave"
     ],

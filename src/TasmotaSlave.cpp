@@ -246,6 +246,16 @@ void TasmotaSlave::SendTele(char *data)
   serial->write(char(PARAM_DATA_END));
 }
 
+void TasmotaSlave::ExecuteCommand(char *cmnd)
+{
+  SendCommand(CMND_EXECUTE_CMND, strlen(cmnd));
+  serial->write(char(PARAM_DATA_START));
+  for (uint8_t idx = 0; idx < strlen(cmnd); idx++) {
+    serial->write(cmnd[idx]);
+  }
+  serial->write(char(PARAM_DATA_END));
+}
+
 void TasmotaSlave::loop(void)
 {
   if (serial->available()) {

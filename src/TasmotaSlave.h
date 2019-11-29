@@ -26,7 +26,7 @@
  * TasmotaSlave Configuration Defaults
 \*************************************************/
 
-#define TASMOTA_SLAVE_LIB_VERSION      20191101
+#define TASMOTA_SLAVE_LIB_VERSION      20191129
 
 /*************************************************\
  * TasmotaSlave Command definitions
@@ -41,6 +41,7 @@
 #define CMND_FUNC_EVERY_100_MSECOND    0x04
 #define CMND_SLAVE_SEND                0x05
 #define CMND_PUBLISH_TELE              0x06
+#define CMND_EXECUTE_CMND              0x07
 
 /*************************************************\
  * TasmotaSlave Parameter defintions
@@ -88,6 +89,7 @@ class TasmotaSlave {
      // Used internally to decode and process incoming commands from the Tasmota device
      void ProcessCommand(void);
      // Main slave loop which needs to be serviced occasionally to process incoming requests
+     void ExecuteCommand(char *cmnd);
      void loop(void);
     private:
      HardwareSerial *serial;

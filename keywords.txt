@@ -24,6 +24,7 @@ SendTele                       KEYWORD2
 waitforbytes                   KEYWORD2
 ProcessSend                    KEYWORD2
 ProcessCommand                 KEYWORD2
+ExecuteCommand                 KEYWORD2
 loop                           KEYWORD2
 
 #######################################
