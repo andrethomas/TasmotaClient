@@ -1,9 +1,9 @@
 /*
-  SlaveRespondTele.ino - Example for TasmotaSlave to respond to SlaveSend ON and
-                         SlaveSend OFF commands via console or telemetry.
+  ClientRespondTele.ino - Example for TasmotaClient to respond to ClientSend ON and
+                         ClientSend OFF commands via console or telemetry.
                          In this example the ON and OFF is case sensitive so needs
                          to be sent in capital letters from the Tasmota device.
-                         Upon receiving ON/OFF the slave will turn the LED on/off
+                         Upon receiving ON/OFF the client will turn the LED on/off
                          respectively and respond with a telemetry message sent
                          back to Tasmota that will be published for telemetry
                          and rules processing on the Tasmota device.
@@ -25,9 +25,9 @@
 */
 
 #include <Arduino.h>
-#include <TasmotaSlave.h>
+#include <TasmotaClient.h>
 
-TasmotaSlave slave(&Serial);
+TasmotaClient client(&Serial);
 
 /*******************************************************************\
  * Normal setup() function for Arduino to configure the serial port
@@ -42,30 +42,30 @@ void setup() {
   // Configure the serial port for the correct baud rate
   Serial.begin(57600);
   // Attach the callback function which will be called when Tasmota requests it
-  slave.attach_FUNC_COMMAND_SEND(user_FUNC_RECEIVE);
+  client.attach_FUNC_COMMAND_SEND(user_FUNC_RECEIVE);
 }
 
 /*******************************************************************\
  * Function which will be called when Tasmota sends a
- * SlaveSend command
+ * ClientSend command
 \*******************************************************************/
 
 void user_FUNC_RECEIVE(char *data)
 {
-  if (!strcmp(data, "ON")) { // SlaveSend ON
+  if (!strcmp(data, "ON")) { // ClientSend ON
     digitalWrite(LED_BUILTIN, HIGH);
     char response[20];
     sprintf(response,"{\"LED\":\"ON\"}");
-    slave.SendTele(response);
+    client.SendTele(response);
   }
-  if (!strcmp(data, "OFF")) { // SlaveSend OFF
+  if (!strcmp(data, "OFF")) { // ClientSend OFF
     digitalWrite(LED_BUILTIN, LOW);
     char response[20];
     sprintf(response,"{\"LED\":\"OFF\"}");
-    slave.SendTele(response);
+    client.SendTele(response);
   }
 }
 
 void loop() {
-  slave.loop(); // Call the slave loop function every so often to process incoming requests
+  client.loop(); // Call the client loop function every so often to process incoming requests
 }
