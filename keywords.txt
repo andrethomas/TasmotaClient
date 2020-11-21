@@ -1,12 +1,12 @@
 #######################################
-# Syntax Coloring Map for TasmotaSlave
+# Syntax Coloring Map for TasmotaClient
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-TasmotaSlave                   KEYWORD1
+TasmotaClient                   KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
