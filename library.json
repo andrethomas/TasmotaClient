@@ -1,10 +1,10 @@
 {
-    "name": "TasmotaSlave",
+    "name": "TasmotaClient",
     "version": "0.0.2",
     "keywords": [
-      "serial", "io", "TasmotaSlave"
+      "serial", "io", "TasmotaClient"
     ],
-    "description": "TasmotaSlave Driver Library",
+    "description": "TasmotaClient Driver Library",
     "repository":
     {
         "type": "git",
