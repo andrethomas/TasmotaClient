@@ -1,5 +1,5 @@
 /*
-  Blink.ino - Example for TasmotaSlave receiving the FUNC_EVERY_SECOND
+  Blink.ino - Example for TasmotaClient receiving the FUNC_EVERY_SECOND
               callback and respond by toggling the LED as configured.
 
   Copyright (C) 2019  Andre Thomas
@@ -19,9 +19,9 @@
 */
 
 #include <Arduino.h>
-#include <TasmotaSlave.h>
+#include <TasmotaClient.h>
 
-TasmotaSlave slave(&Serial);
+TasmotaClient client(&Serial);
 
 bool ledstate = false;
 
@@ -54,10 +54,10 @@ void setup() {
   // We're going to use the builtin LED so lets configure the pin as OUTPUT
   pinMode(LED_BUILTIN, OUTPUT);
   // Attach the callback function which will be called when Tasmota requests it
-  slave.attach_FUNC_EVERY_SECOND(user_FUNC_EVERY_SECOND);
+  client.attach_FUNC_EVERY_SECOND(user_FUNC_EVERY_SECOND);
 }
 
 void loop() {
-  // Call the slave loop function every so often to process incoming requests
-  slave.loop();
+  // Call the client loop function every so often to process incoming requests
+  client.loop();
 }
