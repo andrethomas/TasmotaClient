@@ -1,5 +1,5 @@
 /*
-  TasmotaClient.h - Library for microcontrollers enclientd by Tasmota
+  TasmotaClient.h - Library for microcontrollers enslaved by Tasmota
   
   Copyright (C) 2019  Andre Thomas
   
@@ -23,7 +23,7 @@
 #include <Arduino.h>
 
 /*************************************************\
- * TasmotaClient Configuration Defaults    Theo 20200502
+ * TasmotaClient Configuration Defaults
 \*************************************************/
 
 #define TASMOTA_CLIENT_LIB_VERSION      20191129
